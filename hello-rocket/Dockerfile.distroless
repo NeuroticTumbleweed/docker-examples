@@ -1,0 +1,10 @@
+FROM rust:1.41 AS builder
+RUN rustup override set nightly
+
+WORKDIR /usr/src/hello-rocket
+COPY . .
+RUN cargo install --path .
+
+FROM gcr.io/distroless/cc-debian10:01579c3dd0f9b4397fe4f50769a9caea130b15e7
+COPY --from=builder /usr/local/cargo/bin/hello-rocket /usr/local/bin/hello-rocket
+CMD ["hello-rocket"]
